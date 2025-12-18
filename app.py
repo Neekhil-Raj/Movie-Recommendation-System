@@ -1,6 +1,6 @@
 import streamlit as st
 import pickle
-st.title('Movie-Recommendation-System')
+st.title('Movie Recommendation System')
 import requests
 from concurrent.futures import ThreadPoolExecutor
 
@@ -16,7 +16,7 @@ def fetch_poster(movie_id, delay=0.8):
 
         url = f"https://api.themoviedb.org/3/movie/{movie_id}"
         params = {
-            "api_key": "ae953c55f96e8955ae9d7c7716ca6bf9",
+            "api_key": "NA",
             "language": "en-US"
         }
 
@@ -60,7 +60,7 @@ def recommend(movie):
     return movie_names, movie_posters
 
 selected_movies_name = st.selectbox(
-    'Select a movie',
+    'Select your favorite movie and get 5 best movie recommendations',
     [''] + movies['title'].tolist()
 )
 

@@ -1,0 +1,12 @@
+# Virtual environments
+venv/
+
+# ML models
+*.pkl
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/

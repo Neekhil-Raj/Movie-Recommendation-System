@@ -76,5 +76,4 @@ if st.button('Recommend'):
                 st.image(posters[i])
                 print(posters[i])
             else:
->>>>>>> edcf93c921109d175ab41b9036048d9ba3bb0b82
                 st.write("Poster not available")

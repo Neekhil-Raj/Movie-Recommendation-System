@@ -65,7 +65,6 @@ selected_movies_name = st.selectbox(
     [''] + movies['title'].tolist()
 )
 
-
 import time
 
 if st.button('Recommend'):
@@ -92,5 +91,4 @@ if st.button('Recommend'):
                 st.image(posters[i])
             else:
                 st.write("Poster not available")
-
     status_text.text("✅ Recommendations loaded successfully!")

@@ -74,4 +74,4 @@ streamlit run app.py
 
 ---
 
-If you like this project, give it a star!
+If you like this project, give it a star!"# Movie-Recommendation-System" 

@@ -1,23 +1,52 @@
 import streamlit as st
 import pickle
-st.title('Movie Recommendation System')
 import requests
+import time
+import os
+import gdown
 from concurrent.futures import ThreadPoolExecutor
 
+st.title('Movie Recommendation System')
 
-movies = pickle.load(open('movies.pkl','rb'))
-similarity = pickle.load(open('similarity.pkl','rb'))
+# ===============================
+# 📥 DOWNLOAD LARGE FILES (Render)
+# ===============================
 
+MOVIES_FILE = "movies.pkl"
+SIMILARITY_FILE = "similarity.pkl"
+
+MOVIES_FILE_ID = "PASTE_MOVIES_FILE_ID_HERE"
+SIMILARITY_FILE_ID = "PASTE_SIMILARITY_FILE_ID_HERE"
+
+MOVIES_URL = f"https://drive.google.com/uc?id=1xCdoDc41TA8hpmJC-FSlhIzEZ-CFCX8q"
+SIMILARITY_URL = f"https://drive.google.com/uc?id=1t6sHdlpgyOtYaiEu17WY8idVEXsrEZMf"
+
+if not os.path.exists(MOVIES_FILE):
+    st.info("Downloading movies data...")
+    gdown.download(MOVIES_URL, MOVIES_FILE, quiet=False)
+
+if not os.path.exists(SIMILARITY_FILE):
+    st.info("Downloading similarity matrix...")
+    gdown.download(SIMILARITY_URL, SIMILARITY_FILE, quiet=False)
+
+# ===============================
+# 📦 LOAD DATA
+# ===============================
+
+movies = pickle.load(open(MOVIES_FILE, 'rb'))
+similarity = pickle.load(open(SIMILARITY_FILE, 'rb'))
+
+# ===============================
+# 🎬 POSTER FETCH FUNCTION
+# ===============================
 
 def fetch_poster(movie_id, delay=0.8):
     try:
-        # ⏳ wait before each API call
         time.sleep(delay)
 
         url = f"https://api.themoviedb.org/3/movie/{movie_id}"
         params = {
-
-            "api_key": "ae953c55f96e8955ae9d7c7716ca6bf9",
+            "api_key": "66a1420a7fb13e7615d4d76997ec22b1",
             "language": "en-US"
         }
 
@@ -35,6 +64,9 @@ def fetch_poster(movie_id, delay=0.8):
         print("Error fetching poster:", e)
         return None
 
+# ===============================
+# 🤖 RECOMMENDATION LOGIC
+# ===============================
 
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
@@ -51,21 +83,17 @@ def recommend(movie):
 
     with ThreadPoolExecutor(max_workers=5) as executor:
         movie_posters = list(executor.map(fetch_poster, movie_ids))
-    
-    #print(movie_ids)
-
-    #print(movie_names)
-
-    print(movie_posters)
 
     return movie_names, movie_posters
+
+# ===============================
+# 🎯 STREAMLIT UI
+# ===============================
 
 selected_movies_name = st.selectbox(
     'Select your favorite movie and get 5 best movie recommendations',
     [''] + movies['title'].tolist()
 )
-
-import time
 
 if st.button('Recommend'):
     names, posters = recommend(selected_movies_name)
@@ -74,7 +102,6 @@ if st.button('Recommend'):
     status_text = st.empty()
 
     cols = st.columns(5)
-
     total = len(names)
 
     for i in range(total):
@@ -84,11 +111,11 @@ if st.button('Recommend'):
 
         with cols[i]:
             st.text(names[i])
-
-            time.sleep(0.7)  # ⏳ animation delay
+            time.sleep(0.7)
 
             if posters[i]:
                 st.image(posters[i])
             else:
                 st.write("Poster not available")
+
     status_text.text("✅ Recommendations loaded successfully!")

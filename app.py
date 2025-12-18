@@ -1,6 +1,6 @@
 import streamlit as st
 import pickle
-st.title('MRS')
+st.title('Movie-Recommendation-System')
 import requests
 from concurrent.futures import ThreadPoolExecutor
 
@@ -9,11 +9,14 @@ movies = pickle.load(open('movies.pkl','rb'))
 similarity = pickle.load(open('similarity.pkl','rb'))
 
 
-def fetch_poster(movie_id):
+def fetch_poster(movie_id, delay=0.8):
     try:
+        # ⏳ wait before each API call
+        time.sleep(delay)
+
         url = f"https://api.themoviedb.org/3/movie/{movie_id}"
         params = {
-            "api_key": 'ae953c55f96e8955ae9d7c7716ca6bf9',
+            "api_key": "ae953c55f96e8955ae9d7c7716ca6bf9",
             "language": "en-US"
         }
 
@@ -25,8 +28,7 @@ def fetch_poster(movie_id):
 
         if poster_path:
             return "https://image.tmdb.org/t/p/w500" + poster_path
-        else:
-            return None
+        return None
 
     except requests.exceptions.RequestException as e:
         print("Error fetching poster:", e)
@@ -59,21 +61,35 @@ def recommend(movie):
 
 selected_movies_name = st.selectbox(
     'Select a movie',
-    movies['title'].values
+    [''] + movies['title'].tolist()
 )
 
+
+import time
 
 if st.button('Recommend'):
     names, posters = recommend(selected_movies_name)
 
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+
     cols = st.columns(5)
 
-    for i in range(5):
+    total = len(names)
+
+    for i in range(total):
+        progress = int(((i + 1) / total) * 100)
+        progress_bar.progress(progress)
+        status_text.text(f"Loading poster {i + 1} of {total}...")
+
         with cols[i]:
             st.text(names[i])
-            print(names[i])
+
+            time.sleep(0.7)  # ⏳ animation delay
+
             if posters[i]:
                 st.image(posters[i])
-                print(posters[i])
             else:
                 st.write("Poster not available")
+
+    status_text.text("✅ Recommendations loaded successfully!")

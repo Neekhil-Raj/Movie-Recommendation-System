@@ -1,6 +1,2 @@
-<<<<<<< HEAD
 streamlit
-=======
-streamlit
->>>>>>> edcf93c921109d175ab41b9036048d9ba3bb0b82
 requests

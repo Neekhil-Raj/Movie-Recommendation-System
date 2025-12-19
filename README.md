@@ -1,6 +1,7 @@
 # 🎬 Movie Recommender System
 
 A **Content-Based Movie Recommendation System** that suggests similar movies based on user selection. The application is built using **Python** and **Streamlit**, leveraging **cosine similarity** for accurate recommendations and deployed for real-time usage.
+- Live Demo: https://5-movies-recommendation-system.streamlit.app
 
 ---
 
